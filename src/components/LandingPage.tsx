@@ -1,13 +1,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, Award, Volume2, Brain, TrendingUp, ArrowRight } from "lucide-react";
+import { CheckCircle, Award, Volume2, Brain, TrendingUp, ArrowRight, LogIn, UserPlus } from "lucide-react";
 
 interface LandingPageProps {
   onGetStarted: () => void;
+  onLogin: () => void;
+  onSignup: () => void;
 }
 
-const LandingPage = ({ onGetStarted }: LandingPageProps) => {
+const LandingPage = ({ onGetStarted, onLogin, onSignup }: LandingPageProps) => {
   const features = [
     {
       icon: CheckCircle,
@@ -38,6 +40,27 @@ const LandingPage = ({ onGetStarted }: LandingPageProps) => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Header with Auth Buttons */}
+      <div className="absolute top-4 right-4 z-50 flex gap-2">
+        <Button
+          onClick={onLogin}
+          variant="ghost"
+          size="sm"
+          className="text-white hover:bg-white/10 border border-white/20"
+        >
+          <LogIn className="h-4 w-4 mr-2" />
+          Log In
+        </Button>
+        <Button
+          onClick={onSignup}
+          size="sm"
+          className="bg-white text-black hover:bg-gray-200"
+        >
+          <UserPlus className="h-4 w-4 mr-2" />
+          Sign Up
+        </Button>
+      </div>
+
       {/* Hero Section */}
       <div className="flex-1 flex items-center justify-center px-4 py-16">
         <div className="max-w-6xl mx-auto text-center">
@@ -83,14 +106,23 @@ const LandingPage = ({ onGetStarted }: LandingPageProps) => {
       {/* CTA Section */}
       <div className="px-4 py-16 text-center">
         <h2 className="text-3xl font-bold mb-6 text-white">Ready to grade up your study game?</h2>
-        <Button 
-          onClick={onGetStarted}
-          variant="outline"
-          size="lg"
-          className="border-white text-white hover:bg-white hover:text-black transition-all duration-300 px-8 py-4 rounded-full font-semibold"
-        >
-          Start Your Journey
-        </Button>
+        <div className="flex gap-4 justify-center">
+          <Button 
+            onClick={onSignup}
+            size="lg"
+            className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-full font-semibold"
+          >
+            Create Account
+          </Button>
+          <Button 
+            onClick={onLogin}
+            variant="outline"
+            size="lg"
+            className="border-white text-white hover:bg-white hover:text-black transition-all duration-300 px-8 py-4 rounded-full font-semibold"
+          >
+            Sign In
+          </Button>
+        </div>
       </div>
     </div>
   );
