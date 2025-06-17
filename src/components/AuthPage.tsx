@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import OTPVerification from './OTPVerification';
 
 interface AuthPageProps {
   onBack: () => void;
@@ -19,8 +21,9 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
   const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showOTPVerification, setShowOTPVerification] = useState(false);
   
-  const { signUp, signIn, user } = useAuth();
+  const { signIn, user } = useAuth();
   const { toast } = useToast();
 
   // Redirect if user is already logged in
@@ -35,10 +38,24 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
     setIsLoading(true);
 
     try {
-      let result;
       if (isLogin) {
-        result = await signIn(email, password);
+        // Handle login
+        const result = await signIn(email, password);
+        
+        if (result.error) {
+          toast({
+            title: "Error",
+            description: result.error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Success",
+            description: "Logged in successfully!",
+          });
+        }
       } else {
+        // Handle signup with OTP
         if (!fullName.trim()) {
           toast({
             title: "Error",
@@ -48,29 +65,42 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
           setIsLoading(false);
           return;
         }
-        result = await signUp(email, password, fullName);
-      }
 
-      if (result.error) {
-        toast({
-          title: "Error",
-          description: result.error.message,
-          variant: "destructive",
+        // Send OTP
+        const { data, error } = await supabase.functions.invoke('send-otp', {
+          body: { email },
         });
-      } else {
-        if (!isLogin) {
+
+        if (error) {
+          throw error;
+        }
+
+        if (data.error) {
           toast({
-            title: "Success",
-            description: "Account created successfully! Please check your email to verify your account.",
+            title: "Error",
+            description: data.error,
+            variant: "destructive",
           });
         } else {
           toast({
-            title: "Success",
-            description: "Logged in successfully!",
+            title: "OTP Sent",
+            description: "Please check your email for the verification code",
           });
+
+          // For development - show OTP in console
+          if (data.otp) {
+            console.log('OTP:', data.otp);
+            toast({
+              title: "Development Mode",
+              description: `OTP: ${data.otp}`,
+            });
+          }
+
+          setShowOTPVerification(true);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Auth error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
@@ -86,7 +116,36 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
     setEmail('');
     setPassword('');
     setFullName('');
+    setShowOTPVerification(false);
   };
+
+  const handleOTPBack = () => {
+    setShowOTPVerification(false);
+  };
+
+  const handleOTPSuccess = () => {
+    toast({
+      title: "Welcome!",
+      description: "Your account has been created successfully. Please log in.",
+    });
+    setShowOTPVerification(false);
+    setIsLogin(true);
+    setEmail('');
+    setPassword('');
+    setFullName('');
+  };
+
+  if (showOTPVerification) {
+    return (
+      <OTPVerification
+        email={email}
+        password={password}
+        fullName={fullName}
+        onBack={handleOTPBack}
+        onSuccess={handleOTPSuccess}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex items-center justify-center p-4">
@@ -172,7 +231,7 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
               className="w-full bg-white text-black hover:bg-gray-200 font-semibold"
               disabled={isLoading}
             >
-              {isLoading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
+              {isLoading ? 'Loading...' : (isLogin ? 'Sign In' : 'Send Verification Code')}
             </Button>
           </form>
 

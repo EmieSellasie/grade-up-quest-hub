@@ -33,12 +33,63 @@ export type Database = {
         }
         Relationships: []
       }
+      User: {
+        Row: {
+          email: string
+          fullname: string | null
+          password: string
+        }
+        Insert: {
+          email: string
+          fullname?: string | null
+          password: string
+        }
+        Update: {
+          email?: string
+          fullname?: string | null
+          password?: string
+        }
+        Relationships: []
+      }
+      user_otps: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          otp_code: string
+          user_id: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          otp_code: string
+          user_id?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          otp_code?: string
+          user_id?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_expired_otps: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
