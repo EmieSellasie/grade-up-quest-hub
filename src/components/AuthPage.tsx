@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -86,16 +85,6 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
             title: "OTP Sent",
             description: "Please check your email for the verification code",
           });
-
-          // For development - show OTP in console
-          if (data.otp) {
-            console.log('OTP:', data.otp);
-            toast({
-              title: "Development Mode",
-              description: `OTP: ${data.otp}`,
-            });
-          }
-
           setShowOTPVerification(true);
         }
       }

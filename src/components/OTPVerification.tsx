@@ -97,15 +97,6 @@ const OTPVerification = ({ email, password, fullName, onBack, onSuccess }: OTPVe
         title: "OTP Sent",
         description: "A new OTP has been sent to your email",
       });
-
-      // For development - show OTP in console
-      if (data.otp) {
-        console.log('New OTP:', data.otp);
-        toast({
-          title: "Development Mode",
-          description: `OTP: ${data.otp}`,
-        });
-      }
     } catch (error: any) {
       console.error('Resend OTP error:', error);
       toast({

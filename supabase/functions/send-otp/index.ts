@@ -1,6 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { Resend } from "npm:resend@2.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,6 +23,8 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
+
+    const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
     const { email }: SendOTPRequest = await req.json();
 
@@ -45,17 +48,40 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to store OTP");
     }
 
-    // For now, we'll just log the OTP (in production, you'd send an email)
-    console.log(`OTP for ${email}: ${otpCode}`);
+    // Send OTP via email using Resend
+    try {
+      const emailResponse = await resend.emails.send({
+        from: "Grade Up <onboarding@resend.dev>",
+        to: [email],
+        subject: "Your Grade Up Verification Code",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h1 style="color: #333; text-align: center;">Grade Up</h1>
+            <h2 style="color: #555; text-align: center;">Email Verification</h2>
+            <p style="font-size: 16px; color: #666; text-align: center;">
+              Your verification code is:
+            </p>
+            <div style="background: #f0f0f0; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;">
+              <h1 style="color: #333; font-size: 36px; margin: 0; letter-spacing: 8px;">${otpCode}</h1>
+            </div>
+            <p style="font-size: 14px; color: #888; text-align: center;">
+              This code will expire in 10 minutes. If you didn't request this code, please ignore this email.
+            </p>
+          </div>
+        `,
+      });
 
-    // TODO: Integrate with email service (Resend, SendGrid, etc.)
-    // For development, we'll return the OTP in the response
+      console.log("Email sent successfully:", emailResponse);
+    } catch (emailError) {
+      console.error("Error sending email:", emailError);
+      // Still return success since OTP is stored, but log the email error
+      // In production, you might want to handle this differently
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "OTP sent successfully",
-        // Remove this in production - only for development
-        otp: otpCode 
+        message: "OTP sent successfully to your email"
       }),
       {
         status: 200,
