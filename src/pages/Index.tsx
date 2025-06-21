@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Award, Volume2, Brain, TrendingUp, Plus, LogOut } from "lucide-react";
@@ -16,6 +16,14 @@ import PerformanceReports from "@/components/PerformanceReports";
 const Index = () => {
   const [currentView, setCurrentView] = useState("landing");
   const { user, signOut, loading } = useAuth();
+
+  // Auto-redirect authenticated users to dashboard
+  useEffect(() => {
+    if (user && (currentView === "landing" || currentView === "login" || currentView === "signup")) {
+      console.log('User authenticated, redirecting to dashboard');
+      setCurrentView("dashboard");
+    }
+  }, [user, currentView]);
 
   if (loading) {
     return (
@@ -51,8 +59,6 @@ const Index = () => {
 
     // If user is logged in, show app views
     switch (currentView) {
-      case "dashboard":
-        return <Dashboard onNavigate={setCurrentView} />;
       case "todos":
         return <TodoList onBack={() => setCurrentView("dashboard")} />;
       case "rewards":
