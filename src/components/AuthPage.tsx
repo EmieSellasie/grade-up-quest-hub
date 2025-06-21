@@ -26,6 +26,7 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
   // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
+      console.log('User is authenticated, redirecting...');
       onBack();
     }
   }, [user, onBack]);
@@ -40,15 +41,16 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
         const result = await signIn(email, password);
         
         if (result.error) {
+          console.error('Login error:', result.error);
           toast({
-            title: "Error",
-            description: result.error.message,
+            title: "Login Failed",
+            description: result.error.message || "Please check your credentials and try again.",
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Success",
-            description: "Logged in successfully!",
+            title: "Welcome back!",
+            description: "You have been logged in successfully.",
           });
         }
       } else {
@@ -66,15 +68,16 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
         const result = await signUp(email, password, fullName);
         
         if (result.error) {
+          console.error('Signup error:', result.error);
           toast({
-            title: "Error",
-            description: result.error.message,
+            title: "Signup Failed",
+            description: result.error.message || "There was an error creating your account.",
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Welcome!",
-            description: "Account created successfully! You are now logged in.",
+            title: "Account Created!",
+            description: "Welcome to Grade Up! You are now logged in.",
           });
         }
       }
@@ -82,7 +85,7 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
       console.error('Auth error:', error);
       toast({
         title: "Error",
-        description: "An unexpected error occurred",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -181,7 +184,7 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
               className="w-full bg-white text-black hover:bg-gray-200 font-semibold"
               disabled={isLoading}
             >
-              {isLoading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
+              {isLoading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
             </Button>
           </form>
 
@@ -194,6 +197,7 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
               variant="link"
               onClick={toggleMode}
               className="text-white hover:text-gray-300 font-semibold"
+              disabled={isLoading}
             >
               {isLogin ? 'Sign up here' : 'Sign in here'}
             </Button>

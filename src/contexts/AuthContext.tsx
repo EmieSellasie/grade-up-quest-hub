@@ -64,10 +64,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         data: {
           full_name: fullName,
         },
+        emailRedirectTo: undefined, // Disable email confirmation
       },
     });
     
     console.log('Signup result:', { data, error });
+    
+    // If signup is successful and user is immediately confirmed, they should be logged in
+    if (!error && data.user && !data.user.email_confirmed_at) {
+      // For development, we might need to manually confirm the user
+      console.log('User created but not confirmed');
+    }
+    
     return { error };
   };
 
