@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
-import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Shield, Zap, Lock, User, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface AuthPageProps {
@@ -101,61 +101,86 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-sm">
-        <CardHeader className="text-center">
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/5 rounded-full blur-3xl animate-float" style={{animationDelay: '4s'}}></div>
+      </div>
+
+      <Card className="w-full max-w-lg gaming-card relative z-10">
+        <CardHeader className="text-center relative">
           <Button
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="absolute left-4 top-4 text-white hover:bg-white/10"
+            className="absolute left-4 top-4 text-muted-foreground hover:text-foreground hover:bg-primary/20 transition-all duration-300"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-5 w-5" />
           </Button>
-          <CardTitle className="text-2xl font-bold text-white">
-            {isLogin ? 'Welcome Back' : 'Join Grade Up'}
+          
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <div className="gaming-card p-4 animate-glow-pulse">
+              <Shield className="h-12 w-12 text-primary" />
+            </div>
+          </div>
+          
+          <CardTitle className="font-orbitron text-3xl font-bold text-gradient mb-2">
+            {isLogin ? 'ACCESS GRANTED' : 'INITIALIZE USER'}
           </CardTitle>
-          <p className="text-gray-300">
-            {isLogin ? 'Sign in to your account' : 'Create your account to get started'}
+          <p className="font-exo text-muted-foreground">
+            {isLogin ? 'Welcome back, Commander' : 'Begin your journey to academic mastery'}
           </p>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        
+        <CardContent className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
-              <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-300 mb-2">
-                  Full Name
+              <div className="space-y-2">
+                <label htmlFor="fullName" className="flex items-center gap-2 font-exo text-sm font-medium text-foreground">
+                  <User className="h-4 w-4 text-primary" />
+                  Commander Name
                 </label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required={!isLogin}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  placeholder="Enter your full name"
-                />
+                <div className="relative">
+                  <Input
+                    id="fullName"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required={!isLogin}
+                    className="font-exo bg-card/50 border-primary/30 text-foreground placeholder:text-muted-foreground focus:border-primary pl-10 h-12 rounded-lg"
+                    placeholder="Enter your full name"
+                  />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/60" />
+                </div>
               </div>
             )}
             
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                Email
+            <div className="space-y-2">
+              <label htmlFor="email" className="flex items-center gap-2 font-exo text-sm font-medium text-foreground">
+                <Mail className="h-4 w-4 text-primary" />
+                Access Code (Email)
               </label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                placeholder="Enter your email"
-              />
+              <div className="relative">
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="font-exo bg-card/50 border-primary/30 text-foreground placeholder:text-muted-foreground focus:border-primary pl-10 h-12 rounded-lg"
+                  placeholder="Enter your email"
+                />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/60" />
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-                Password
+            <div className="space-y-2">
+              <label htmlFor="password" className="flex items-center gap-2 font-exo text-sm font-medium text-foreground">
+                <Lock className="h-4 w-4 text-primary" />
+                Security Key (Password)
               </label>
               <div className="relative">
                 <Input
@@ -164,14 +189,15 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 pr-10"
+                  className="font-exo bg-card/50 border-primary/30 text-foreground placeholder:text-muted-foreground focus:border-primary pl-10 pr-12 h-12 rounded-lg"
                   placeholder="Enter your password"
                 />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/60" />
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white hover:bg-transparent"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-primary/20"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -181,26 +207,38 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
 
             <Button
               type="submit"
-              className="w-full bg-white text-black hover:bg-gray-200 font-semibold"
+              className="cyber-button w-full h-12 font-orbitron font-bold text-lg"
               disabled={isLoading}
             >
-              {isLoading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+              <Zap className="mr-2 h-5 w-5" />
+              {isLoading ? 'PROCESSING...' : (isLogin ? 'INITIATE LOGIN' : 'CREATE PROFILE')}
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-gray-300">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
-            </p>
-            <Button
-              type="button"
-              variant="link"
-              onClick={toggleMode}
-              className="text-white hover:text-gray-300 font-semibold"
-              disabled={isLoading}
-            >
-              {isLogin ? 'Sign up here' : 'Sign in here'}
-            </Button>
+          <div className="text-center space-y-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border/50"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-4 text-muted-foreground font-exo">OR</span>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <p className="font-exo text-sm text-muted-foreground">
+                {isLogin ? "New recruit?" : "Already have access?"}
+              </p>
+              <Button
+                type="button"
+                variant="link"
+                onClick={toggleMode}
+                className="font-exo font-semibold text-primary hover:text-primary-glow transition-colors duration-300"
+                disabled={isLoading}
+              >
+                {isLogin ? 'Join the ranks →' : '← Access existing profile'}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
