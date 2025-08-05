@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,34 +65,32 @@ const TextToSpeech = ({ onBack }: TextToSpeechProps) => {
   };
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-teal-500 to-emerald-600 p-6">
+      <div className="w-full max-w-sm mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="outline" 
-              onClick={onBack}
-              className="border-white/20 text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <h1 className="text-4xl font-bold text-white">Text-to-Speech</h1>
-          </div>
+        <div className="flex items-center mb-8 pt-8">
+          <Button 
+            variant="ghost"
+            onClick={onBack}
+            className="text-white hover:bg-white/10 p-2 mr-4"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold text-white">Text-to-Speech</h1>
         </div>
 
         {/* Upload Section */}
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm mb-6">
+        <Card className="bg-white rounded-2xl shadow-lg mb-6">
           <CardHeader>
-            <CardTitle className="text-white flex items-center">
+            <CardTitle className="text-gray-900 flex items-center text-lg">
               <Upload className="mr-2 h-5 w-5" />
               Upload Documents
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center">
-              <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <p className="text-gray-300 mb-4">
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
+              <FileText className="mx-auto h-10 w-10 text-gray-400 mb-3" />
+              <p className="text-gray-600 mb-4 text-sm">
                 Upload PDF, DOCX, or TXT files to have them read aloud
               </p>
               <input
@@ -105,7 +102,7 @@ const TextToSpeech = ({ onBack }: TextToSpeechProps) => {
               />
               <label htmlFor="file-upload">
                 <Button 
-                  className="bg-white text-black hover:bg-gray-200 cursor-pointer"
+                  className="bg-primary text-white hover:bg-primary/90 rounded-xl cursor-pointer"
                   asChild
                 >
                   <span>
@@ -120,20 +117,20 @@ const TextToSpeech = ({ onBack }: TextToSpeechProps) => {
 
         {/* Current Playback */}
         {isPlaying && (
-          <Card className="bg-gradient-to-r from-green-500/20 to-blue-500/20 border-green-500/30 backdrop-blur-sm mb-6">
+          <Card className="bg-white rounded-2xl shadow-lg mb-6 border-l-4 border-primary">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <Volume2 className="h-5 w-5 text-green-300 animate-pulse" />
-                  <span className="text-white">Currently Playing...</span>
+                  <Volume2 className="h-5 w-5 text-primary animate-pulse" />
+                  <span className="text-gray-900 font-medium">Currently Playing...</span>
                 </div>
                 <Button 
                   onClick={stopSpeech}
                   variant="outline"
                   size="sm"
-                  className="border-white/20 text-white hover:bg-white/10"
+                  className="border-primary text-primary hover:bg-primary/10 rounded-lg"
                 >
-                  <Pause className="mr-2 h-4 w-4" />
+                  <Pause className="mr-1 h-4 w-4" />
                   Stop
                 </Button>
               </div>
@@ -143,47 +140,48 @@ const TextToSpeech = ({ onBack }: TextToSpeechProps) => {
 
         {/* Uploaded Files */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-6">Uploaded Documents</h2>
+          <h2 className="text-lg font-bold text-white mb-4">Uploaded Documents</h2>
           {uploadedFiles.length === 0 ? (
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-              <CardContent className="p-8 text-center">
-                <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <p className="text-gray-300">No files uploaded yet</p>
-                <p className="text-gray-400 text-sm">Upload a document to get started</p>
+            <Card className="bg-white rounded-2xl shadow-sm">
+              <CardContent className="p-6 text-center">
+                <FileText className="mx-auto h-12 w-12 text-gray-400 mb-3" />
+                <p className="text-gray-600">No files uploaded yet</p>
+                <p className="text-gray-500 text-sm">Upload a document to get started</p>
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {uploadedFiles.map((file) => (
-                <Card key={file.id} className="bg-white/5 border-white/10 backdrop-blur-sm">
+                <Card key={file.id} className="bg-white rounded-2xl shadow-sm">
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="font-semibold text-white">{file.name}</h3>
-                        <p className="text-gray-400 text-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900">{file.name}</h3>
+                        <p className="text-gray-500 text-sm">
                           {(file.size / 1024).toFixed(1)} KB • {file.type}
                         </p>
                       </div>
                       <Button 
                         onClick={() => handleTextToSpeech(file.content)}
-                        className="bg-white text-black hover:bg-gray-200"
+                        className="bg-primary text-white hover:bg-primary/90 rounded-lg"
                         disabled={isPlaying}
+                        size="sm"
                       >
                         {isPlaying && currentText === file.content ? (
                           <>
-                            <Pause className="mr-2 h-4 w-4" />
+                            <Pause className="mr-1 h-4 w-4" />
                             Playing
                           </>
                         ) : (
                           <>
-                            <Play className="mr-2 h-4 w-4" />
+                            <Play className="mr-1 h-4 w-4" />
                             Play
                           </>
                         )}
                       </Button>
                     </div>
-                    <div className="bg-black/30 rounded p-3 max-h-32 overflow-y-auto">
-                      <p className="text-gray-300 text-sm">{file.content}</p>
+                    <div className="bg-gray-50 rounded-lg p-3 max-h-20 overflow-y-auto">
+                      <p className="text-gray-700 text-sm">{file.content}</p>
                     </div>
                   </CardContent>
                 </Card>

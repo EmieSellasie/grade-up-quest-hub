@@ -46,7 +46,7 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
         {/* Header */}
         <div className="text-center mb-8 pt-8">
           <h1 className="text-3xl font-bold text-white mb-2">
-            Dashboard
+            GRADEUP
           </h1>
           <p className="text-white/80">
             Welcome to your learning hub

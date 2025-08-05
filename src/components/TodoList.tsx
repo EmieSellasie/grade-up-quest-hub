@@ -59,37 +59,32 @@ const TodoList = ({ onBack }: TodoListProps) => {
   };
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-teal-500 to-emerald-600 p-6">
+      <div className="w-full max-w-sm mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="outline" 
-              onClick={onBack}
-              className="border-white/20 text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <h1 className="text-4xl font-bold text-white">To-Do List</h1>
-          </div>
+        <div className="flex items-center mb-8 pt-8">
+          <Button 
+            variant="ghost"
+            onClick={onBack}
+            className="text-white hover:bg-white/10 p-2 mr-4"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold text-white">To-Do List</h1>
         </div>
 
         {/* Add Task */}
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm mb-6">
-          <CardHeader>
-            <CardTitle className="text-white">Add New Task</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="bg-white rounded-2xl shadow-lg mb-6">
+          <CardContent className="p-6">
             <div className="flex space-x-2">
               <Input
                 placeholder="Enter a new task..."
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addTask()}
-                className="bg-white/10 border-white/20 text-white placeholder-gray-400"
+                className="bg-gray-50 border-gray-200 rounded-xl flex-1"
               />
-              <Button onClick={addTask} className="bg-white text-black hover:bg-gray-200">
+              <Button onClick={addTask} className="bg-primary text-white hover:bg-primary/90 rounded-xl px-4">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -101,38 +96,40 @@ const TodoList = ({ onBack }: TodoListProps) => {
           {tasks.map((task) => (
             <Card 
               key={task.id} 
-              className={`bg-white/5 border-white/10 backdrop-blur-sm border-l-4 ${getPriorityColor(task.priority)} ${
-                task.completed ? "opacity-60" : ""
-              }`}
+              className="bg-white rounded-2xl shadow-sm"
             >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 flex-1">
                     <Checkbox
                       checked={task.completed}
                       onCheckedChange={() => toggleTask(task.id)}
-                      className="border-white/30"
+                      className="border-gray-300"
                     />
-                    <span 
-                      className={`text-white ${
-                        task.completed ? "line-through text-gray-400" : ""
-                      }`}
-                    >
-                      {task.title}
-                    </span>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      task.priority === "high" ? "bg-red-500/20 text-red-300" :
-                      task.priority === "medium" ? "bg-yellow-500/20 text-yellow-300" :
-                      "bg-green-500/20 text-green-300"
-                    }`}>
-                      {task.priority}
-                    </span>
+                    <div className="flex-1">
+                      <span 
+                        className={`text-gray-900 font-medium ${
+                          task.completed ? "line-through text-gray-500" : ""
+                        }`}
+                      >
+                        {task.title}
+                      </span>
+                      <div className="flex items-center mt-1">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          task.priority === "high" ? "bg-red-100 text-red-700" :
+                          task.priority === "medium" ? "bg-yellow-100 text-yellow-700" :
+                          "bg-green-100 text-green-700"
+                        }`}>
+                          {task.priority}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
-                      className="text-gray-400 hover:text-white hover:bg-white/10"
+                      className="text-gray-400 hover:text-gray-600 hover:bg-gray-50 p-2"
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -140,7 +137,7 @@ const TodoList = ({ onBack }: TodoListProps) => {
                       variant="ghost" 
                       size="sm"
                       onClick={() => deleteTask(task.id)}
-                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10"
+                      className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-2"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -152,17 +149,17 @@ const TodoList = ({ onBack }: TodoListProps) => {
         </div>
 
         {/* Progress Summary */}
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm mt-6">
+        <Card className="bg-white rounded-2xl shadow-sm mt-6">
           <CardContent className="p-4">
             <div className="flex justify-between items-center">
-              <span className="text-white">Progress</span>
-              <span className="text-gray-300">
+              <span className="text-gray-900 font-medium">Progress</span>
+              <span className="text-gray-600 text-sm">
                 {tasks.filter(t => t.completed).length} of {tasks.length} completed
               </span>
             </div>
-            <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
               <div 
-                className="bg-white rounded-full h-2 transition-all duration-300"
+                className="bg-primary rounded-full h-2 transition-all duration-300"
                 style={{ 
                   width: `${tasks.length > 0 ? (tasks.filter(t => t.completed).length / tasks.length) * 100 : 0}%` 
                 }}

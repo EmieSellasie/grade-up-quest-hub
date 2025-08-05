@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -76,125 +75,120 @@ const RewardsSystem = ({ onBack }: RewardsSystemProps) => {
   ];
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-teal-500 to-emerald-600 p-6">
+      <div className="w-full max-w-sm mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="outline" 
-              onClick={onBack}
-              className="border-white/20 text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <h1 className="text-4xl font-bold text-white">Rewards System</h1>
-          </div>
+        <div className="flex items-center mb-8 pt-8">
+          <Button 
+            variant="ghost"
+            onClick={onBack}
+            className="text-white hover:bg-white/10 p-2 mr-4"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold text-white">Rewards</h1>
         </div>
 
         {/* Points Overview */}
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm mb-8">
+        <Card className="bg-white rounded-2xl shadow-lg mb-6">
           <CardHeader>
-            <CardTitle className="text-white text-2xl">Your Progress</CardTitle>
+            <CardTitle className="text-gray-900 text-lg">Your Progress</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-4xl font-bold text-white">{userPoints}</p>
-                <p className="text-gray-300">Total Points</p>
+                <p className="text-3xl font-bold text-primary">{userPoints}</p>
+                <p className="text-gray-600">Total Points</p>
               </div>
               <div className="text-right">
-                <p className="text-xl text-white">{nextLevelPoints - userPoints} points to next level</p>
-                <p className="text-gray-300">Level 3 → Level 4</p>
+                <p className="text-lg text-gray-900">{nextLevelPoints - userPoints} to next level</p>
+                <p className="text-gray-600 text-sm">Level 3 → Level 4</p>
               </div>
             </div>
-            <Progress value={progress} className="h-3 bg-gray-700" />
+            <Progress value={progress} className="h-2" />
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Achievements */}
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-6">Achievements</h2>
-            <div className="space-y-4">
-              {achievements.map((achievement) => (
-                <Card 
-                  key={achievement.id}
-                  className={`${
-                    achievement.unlocked 
-                      ? "bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30" 
-                      : "bg-white/5 border-white/10"
-                  } backdrop-blur-sm`}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-4">
-                      <div className={`p-3 rounded-full ${
-                        achievement.unlocked ? "bg-yellow-500/30" : "bg-gray-500/30"
+        {/* Achievements */}
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-white mb-4">Achievements</h2>
+          <div className="space-y-3">
+            {achievements.map((achievement) => (
+              <Card 
+                key={achievement.id}
+                className={`${
+                  achievement.unlocked 
+                    ? "bg-white border-primary/20" 
+                    : "bg-white/80"
+                } rounded-2xl shadow-sm`}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-3">
+                    <div className={`p-2 rounded-xl ${
+                      achievement.unlocked ? "bg-primary/10" : "bg-gray-100"
+                    }`}>
+                      <achievement.icon className={`h-5 w-5 ${
+                        achievement.unlocked ? "text-primary" : "text-gray-400"
+                      }`} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold ${
+                        achievement.unlocked ? "text-gray-900" : "text-gray-500"
                       }`}>
-                        <achievement.icon className={`h-6 w-6 ${
-                          achievement.unlocked ? "text-yellow-300" : "text-gray-400"
-                        }`} />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className={`font-semibold ${
-                          achievement.unlocked ? "text-white" : "text-gray-400"
-                        }`}>
-                          {achievement.title}
-                        </h3>
-                        <p className="text-gray-300 text-sm">{achievement.description}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className={`font-bold ${
-                          achievement.unlocked ? "text-yellow-300" : "text-gray-400"
-                        }`}>
-                          +{achievement.points}
-                        </p>
-                        <p className="text-xs text-gray-400">points</p>
-                      </div>
+                        {achievement.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm">{achievement.description}</p>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    <div className="text-right">
+                      <p className={`font-bold text-sm ${
+                        achievement.unlocked ? "text-primary" : "text-gray-400"
+                      }`}>
+                        +{achievement.points}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
+        </div>
 
-          {/* Available Rewards */}
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-6">Available Rewards</h2>
-            <div className="space-y-4">
-              {rewards.map((reward, index) => (
-                <Card 
-                  key={index}
-                  className={`bg-white/5 border-white/10 backdrop-blur-sm ${
-                    !reward.available ? "opacity-50" : ""
-                  }`}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-white">{reward.title}</h3>
-                        <p className="text-gray-300 text-sm">{reward.description}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xl font-bold text-white">{reward.cost}</p>
-                        <p className="text-xs text-gray-400 mb-2">points</p>
-                        <Button 
-                          size="sm"
-                          disabled={!reward.available || userPoints < reward.cost}
-                          className={
-                            reward.available && userPoints >= reward.cost
-                              ? "bg-white text-black hover:bg-gray-200"
-                              : "bg-gray-600 text-gray-400 cursor-not-allowed"
-                          }
-                        >
-                          {userPoints >= reward.cost ? "Redeem" : "Not enough points"}
-                        </Button>
-                      </div>
+        {/* Available Rewards */}
+        <div>
+          <h2 className="text-lg font-bold text-white mb-4">Available Rewards</h2>
+          <div className="space-y-3">
+            {rewards.map((reward, index) => (
+              <Card 
+                key={index}
+                className={`bg-white rounded-2xl shadow-sm ${
+                  !reward.available ? "opacity-50" : ""
+                }`}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900">{reward.title}</h3>
+                      <p className="text-gray-600 text-sm">{reward.description}</p>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    <div className="text-right ml-4">
+                      <p className="text-lg font-bold text-primary">{reward.cost}</p>
+                      <p className="text-xs text-gray-500 mb-2">points</p>
+                      <Button 
+                        size="sm"
+                        disabled={!reward.available || userPoints < reward.cost}
+                        className={
+                          reward.available && userPoints >= reward.cost
+                            ? "bg-primary text-white hover:bg-primary/90 rounded-lg text-xs px-3"
+                            : "bg-gray-200 text-gray-500 cursor-not-allowed rounded-lg text-xs px-3"
+                        }
+                      >
+                        {userPoints >= reward.cost ? "Redeem" : "Not enough"}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </div>
