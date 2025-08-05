@@ -41,31 +41,31 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-white p-6">
-      <div className="phone-app w-full max-w-sm p-6">
+    <div className="min-h-screen bg-background p-6">
+      <div className="w-full max-w-sm mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-8 pt-8">
+          <h1 className="text-3xl font-bold text-white mb-2">
             Dashboard
           </h1>
-          <p className="text-gray-600">
+          <p className="text-white/80">
             Welcome to your learning hub
           </p>
         </div>
 
         {/* Feature Grid */}
-        <div className="space-y-4">
+        <div className="space-y-4 px-4">
           {features.map((feature, index) => (
             <Card 
               key={index} 
-              className="feature-card cursor-pointer group"
+              className="bg-white rounded-2xl cursor-pointer group hover:shadow-lg transition-all duration-200"
               onClick={feature.action}
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <feature.icon className="h-6 w-6 text-blue-600" />
+                    <div className="p-3 bg-primary/10 rounded-2xl">
+                      <feature.icon className="h-6 w-6 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 text-lg">
@@ -76,7 +76,7 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
                       </p>
                     </div>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
+                  <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
                 </div>
               </CardContent>
             </Card>

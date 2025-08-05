@@ -91,8 +91,8 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
-      <div className="phone-app w-full max-w-sm p-8">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-sm mx-auto bg-white rounded-3xl p-8 shadow-lg">
         <div className="flex items-center mb-8">
           <Button
             variant="ghost"
@@ -119,7 +119,7 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required={!isLogin}
-                className="h-12"
+                className="h-12 rounded-full border-gray-300"
                 placeholder="Enter your full name"
               />
             </div>
@@ -135,7 +135,7 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-12"
+              className="h-12 rounded-full border-gray-300"
               placeholder="Enter your email"
             />
           </div>
@@ -151,7 +151,7 @@ const AuthPage = ({ onBack, initialMode = 'login' }: AuthPageProps) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="h-12 pr-12"
+                className="h-12 pr-12 rounded-full border-gray-300"
                 placeholder="Enter your password"
               />
               <Button
