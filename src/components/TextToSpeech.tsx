@@ -19,17 +19,21 @@ const TextToSpeech = ({ onBack }: TextToSpeechProps) => {
       try {
         let content = "";
         
-        if (file.type === "text/plain") {
+        if (file.type === "text/plain" || file.name.endsWith('.txt')) {
           content = await file.text();
-        } else if (file.type === "application/pdf") {
-          // For PDF files, we'll show a message that PDF reading requires additional processing
-          content = `PDF file "${file.name}" uploaded. Note: Full PDF text extraction requires server-side processing. This is a placeholder for the actual PDF content that would be extracted.`;
-        } else if (file.name.endsWith('.docx')) {
-          // For DOCX files, we'll show a message similar to PDF
-          content = `DOCX file "${file.name}" uploaded. Note: Full DOCX text extraction requires server-side processing. This is a placeholder for the actual document content that would be extracted.`;
+        } else if (file.type === "application/pdf" || file.name.endsWith('.pdf')) {
+          // For now, show a message for PDF files
+          content = `This is a PDF file named "${file.name}". Please copy and paste the text content you want to have read aloud, as PDF text extraction requires additional processing.`;
+        } else if (file.name.endsWith('.docx') || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+          // For now, show a message for DOCX files  
+          content = `This is a Word document named "${file.name}". Please copy and paste the text content you want to have read aloud, as DOCX text extraction requires additional processing.`;
         } else {
           // Try to read as text for other file types
-          content = await file.text();
+          try {
+            content = await file.text();
+          } catch {
+            content = `File "${file.name}" uploaded. Please copy and paste the text content you want to have read aloud.`;
+          }
         }
 
         const newFile = {

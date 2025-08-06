@@ -72,7 +72,12 @@ const QuizGenerator = ({ onBack }: QuizGeneratorProps) => {
       });
 
       if (response.error) {
-        throw new Error(response.error.message);
+        console.error('Supabase function error:', response.error);
+        if (response.error.message?.includes('quota') || response.error.message?.includes('billing')) {
+          throw new Error("OpenAI API quota exceeded. Please check your OpenAI billing and try again.");
+        } else {
+          throw new Error(response.error.message || "Failed to generate quiz");
+        }
       }
 
       const { questions } = response.data;
