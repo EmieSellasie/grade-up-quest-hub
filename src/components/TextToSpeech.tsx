@@ -13,20 +13,38 @@ const TextToSpeech = ({ onBack }: TextToSpeechProps) => {
   const [currentText, setCurrentText] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Simulate file processing
-      const newFile = {
-        id: Date.now(),
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        content: "This is a sample text content extracted from the uploaded file. In a real implementation, you would extract text from PDF, DOCX, or other file formats using appropriate libraries."
-      };
-      
-      setUploadedFiles([...uploadedFiles, newFile]);
-      toast.success(`File "${file.name}" uploaded successfully!`);
+      try {
+        let content = "";
+        
+        if (file.type === "text/plain") {
+          content = await file.text();
+        } else if (file.type === "application/pdf") {
+          // For PDF files, we'll show a message that PDF reading requires additional processing
+          content = `PDF file "${file.name}" uploaded. Note: Full PDF text extraction requires server-side processing. This is a placeholder for the actual PDF content that would be extracted.`;
+        } else if (file.name.endsWith('.docx')) {
+          // For DOCX files, we'll show a message similar to PDF
+          content = `DOCX file "${file.name}" uploaded. Note: Full DOCX text extraction requires server-side processing. This is a placeholder for the actual document content that would be extracted.`;
+        } else {
+          // Try to read as text for other file types
+          content = await file.text();
+        }
+
+        const newFile = {
+          id: Date.now(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          content: content
+        };
+        
+        setUploadedFiles([...uploadedFiles, newFile]);
+        toast.success(`File "${file.name}" uploaded successfully!`);
+      } catch (error) {
+        toast.error("Failed to read file content");
+      }
     }
   };
 

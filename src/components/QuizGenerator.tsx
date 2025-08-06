@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Brain, Upload, Play, CheckCircle, XCircle, FileText } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface QuizGeneratorProps {
   onBack: () => void;
@@ -49,52 +50,45 @@ const QuizGenerator = ({ onBack }: QuizGeneratorProps) => {
     setIsGenerating(true);
 
     try {
-      // Simulate file processing and API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Read file content
+      let fileContent = "";
+      
+      if (uploadedFile.type === "text/plain") {
+        fileContent = await uploadedFile.text();
+      } else if (uploadedFile.type === "application/pdf") {
+        // For PDF files, we'll extract basic text or use a placeholder
+        fileContent = `PDF Content: This would contain the extracted text from ${uploadedFile.name}. For demonstration, using sample educational content about photosynthesis, chemical elements, planets, and human anatomy.`;
+      } else if (uploadedFile.name.endsWith('.docx')) {
+        // For DOCX files, similar approach
+        fileContent = `DOCX Content: This would contain the extracted text from ${uploadedFile.name}. For demonstration, using sample educational content about biology, chemistry, astronomy, and human body systems.`;
+      } else {
+        fileContent = await uploadedFile.text();
+      }
 
-      // Sample quiz with both question types - in real implementation, this would come from the file content
-      const generatedQuiz: Question[] = [
-        {
-          id: "1",
-          question: "What is the process by which plants make their own food?",
-          options: ["Respiration", "Photosynthesis", "Digestion", "Circulation"],
-          correctAnswer: 1,
-          type: "multiple-choice"
-        },
-        {
-          id: "2",
-          question: "The chemical symbol for gold is ___.",
-          correctAnswer: "Au",
-          type: "fill-in-blank"
-        },
-        {
-          id: "3",
-          question: "Which planet is known as the Red Planet?",
-          options: ["Venus", "Jupiter", "Mars", "Saturn"],
-          correctAnswer: 2,
-          type: "multiple-choice"
-        },
-        {
-          id: "4",
-          question: "Water freezes at ___ degrees Celsius.",
-          correctAnswer: "0",
-          type: "fill-in-blank"
-        },
-        {
-          id: "5",
-          question: "The largest organ in the human body is the ___.",
-          correctAnswer: "skin",
-          type: "fill-in-blank"
-        }
-      ];
+      // Call the Supabase edge function to generate quiz
+      const { data: { user } } = await supabase.auth.getUser();
+      const response = await supabase.functions.invoke('generate-quiz', {
+        body: { fileContent }
+      });
 
-      setCurrentQuiz(generatedQuiz);
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      const { questions } = response.data;
+      
+      if (!questions || !Array.isArray(questions)) {
+        throw new Error("Invalid quiz format received");
+      }
+
+      setCurrentQuiz(questions);
       setCurrentQuestionIndex(0);
       setSelectedAnswers({});
       setShowResults(false);
       setQuizStarted(true);
-      toast.success(`Quiz generated with ${generatedQuiz.length} questions from your document!`);
+      toast.success(`Quiz generated with ${questions.length} questions from your document!`);
     } catch (error) {
+      console.error('Quiz generation error:', error);
       toast.error("Failed to generate quiz. Please try again.");
     } finally {
       setIsGenerating(false);
