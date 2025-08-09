@@ -1,0 +1,2 @@
+-- Add secrets for Cloudmersive and Hugging Face APIs
+-- This will be handled via the Supabase secrets interface

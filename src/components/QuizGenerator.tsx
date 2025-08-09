@@ -50,25 +50,25 @@ const QuizGenerator = ({ onBack }: QuizGeneratorProps) => {
     setIsGenerating(true);
 
     try {
-      // Read file content
-      let fileContent = "";
+      // Prepare file data for the edge function
+      let fileData;
       
       if (uploadedFile.type === "text/plain") {
-        fileContent = await uploadedFile.text();
-      } else if (uploadedFile.type === "application/pdf") {
-        // For PDF files, we'll extract basic text or use a placeholder
-        fileContent = `PDF Content: This would contain the extracted text from ${uploadedFile.name}. For demonstration, using sample educational content about photosynthesis, chemical elements, planets, and human anatomy.`;
-      } else if (uploadedFile.name.endsWith('.docx')) {
-        // For DOCX files, similar approach
-        fileContent = `DOCX Content: This would contain the extracted text from ${uploadedFile.name}. For demonstration, using sample educational content about biology, chemistry, astronomy, and human body systems.`;
+        fileData = await uploadedFile.text();
       } else {
-        fileContent = await uploadedFile.text();
+        // For PDF and DOCX files, we'll send the file as base64
+        const arrayBuffer = await uploadedFile.arrayBuffer();
+        const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+        fileData = base64;
       }
 
       // Call the Supabase edge function to generate quiz
-      const { data: { user } } = await supabase.auth.getUser();
       const response = await supabase.functions.invoke('generate-quiz', {
-        body: { fileContent }
+        body: { 
+          file: fileData,
+          fileType: uploadedFile.type,
+          fileName: uploadedFile.name
+        }
       });
 
       if (response.error) {
